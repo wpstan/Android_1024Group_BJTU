@@ -1,7 +1,7 @@
 BJTU-1024Group
 =========
 
-###homwwork
+###homework
 #### .NativeProgram
 > 1.download aosp，build the environment. <br>
 > 2.source build/envsetup.sh <br>
