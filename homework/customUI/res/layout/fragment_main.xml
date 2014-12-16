@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:customUI="http://schemas.android.com/apk/res/cn.edu.bjtu.custom.ui"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp" >
+
+    <cn.edu.bjtu.custom.ui.uilib.Group1024CustomView
+        android:id="@+id/lock_lock"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        customUI:background="@color/color_lock_lock"
+        customUI:img="@drawable/ic_lock_lock" />
+
+    <cn.edu.bjtu.custom.ui.uilib.Group1024CustomView
+        android:id="@+id/menu_call"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        customUI:background="@color/color_menu_call"
+        customUI:img="@drawable/ic_menu_call" />
+
+    <cn.edu.bjtu.custom.ui.uilib.Group1024CustomView
+        android:id="@+id/menu_camera"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/lock_lock"
+        android:layout_marginTop="10dp"
+        customUI:background="@color/color_menu_camera"
+        customUI:img="@drawable/ic_menu_camera" />
+
+    <cn.edu.bjtu.custom.ui.uilib.Group1024CustomView
+        android:id="@+id/menu_delete"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/menu_call"
+        android:layout_marginTop="10dp"
+        customUI:background="@color/color_menu_delete"
+        customUI:img="@drawable/ic_menu_delete" />
+
+    <cn.edu.bjtu.custom.ui.uilib.Group1024CustomView
+        android:id="@+id/menu_preferences"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/menu_camera"
+        android:layout_marginTop="10dp"
+        customUI:background="@color/color_menu_preferences"
+        customUI:img="@drawable/ic_menu_preferences" />
+
+    <cn.edu.bjtu.custom.ui.uilib.Group1024CustomView
+        android:id="@+id/menu_save"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/menu_delete"
+        android:layout_marginTop="10dp"
+        customUI:background="@color/color_menu_save"
+        customUI:img="@drawable/ic_menu_save" />
+
+</RelativeLayout>

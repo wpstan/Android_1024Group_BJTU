@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="default_color">#FFFFFF</color>
+    <color name="color_lock_lock">#C0FF3E</color>
+    <color name="color_menu_call">#EEAD0E</color>
+    <color name="color_menu_camera">#9F79EE</color>
+    <color name="color_menu_delete">#4876FF</color>
+    <color name="color_menu_preferences">#EEEE00</color>
+    <color name="color_menu_save">#EE4000</color>
+
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 自定义UI属性 -->
+    <declare-styleable name="customUI">
+        <attr name="background" format="reference" />
+        <attr name="img" format="reference" />
+    </declare-styleable>
+
+</resources>
