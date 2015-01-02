@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Recorder</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">录音机</string>
+    <string name="action_settings">设置</string>
+    <string name="action_filelist">历史</string>
+    <string name="send_to">Share</string>
+
+    <string-array name="type_format">
+        <item name="3GPP">3GPP</item>
+        <item name="AAC">AAC</item>
+        <item name="MP4">MP4</item>
+    </string-array>
+    <string-array name="type_format_value">
+        <item name="3GPP">1</item>
+        <item name="AAC">6</item>
+        <item name="MP4">2</item>
+    </string-array>
+    <string-array name="storage_location">
+        <item name="SDCARD">SD 卡</item>
+        <item name="INTERNAL">内部存储</item>
+    </string-array>
+    <string-array name="storage_location_values">
+        <item name="SDCARD">SDCARD</item>
+        <item name="INTERNAL">INTERNAL</item>
+    </string-array>
 
 </resources>

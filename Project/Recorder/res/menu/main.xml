@@ -1,11 +1,14 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="cn.edu.bjtu.group1024.recorder.MainActivity" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         android:title="@string/action_settings"/>
+    <item
+        android:id="@+id/action_filelist"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_filelist"/>
 
 </menu>
