@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="存储" >
+        <ListPreference
+            android:defaultValue="SDCARD"
+            android:entries="@array/storage_location"
+            android:entryValues="@array/storage_location_values"
+            android:key="storage_location"
+            android:summary="选择默认存储位置"
+            android:title="存储位置" />
+
+        <EditTextPreference
+            android:defaultValue="RecorderGroup1024"
+            android:dialogTitle="文件名"
+            android:key="default_file_name"
+            android:summary="更改音频文件名"
+            android:title="文件名" />
+        <EditTextPreference
+            android:defaultValue="RecorderGroup1024"
+            android:dialogTitle="文件夹名字"
+            android:key="default_folder"
+            android:summary="更改文件夹名字"
+            android:title="文件夹位置" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="音频" >
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/type_format"
+            android:entryValues="@array/type_format_value"
+            android:key="set_format"
+            android:summary="选择你的文件格式"
+            android:title="文件格式" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="stop_record_quit"
+            android:summary="当离开应用时停止录音"
+            android:title="离开停止录音" />
+
+        <cn.edu.bjtu.group1024.recorder.NumberPickerPreference
+            android:defaultValue="0"
+            android:key="set_max_time"
+            android:summary="最大录音时间（单位 秒） 0 = 无限制"
+            android:title="最大录音时间" />
+        <cn.edu.bjtu.group1024.recorder.NumberPickerPreference
+            android:defaultValue="0"
+            android:key="set_max_size"
+            android:summary="最大文件大小（单位 MB） 0 = 无限制"
+            android:title="最大文件大小" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="主题" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_dark_theme"
+            android:summary="使用丑陋的黑色主题（需要重启）"
+            android:title="使用黑色主题" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
