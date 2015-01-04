@@ -4,7 +4,6 @@
     <string name="app_name">录音机</string>
     <string name="action_settings">设置</string>
     <string name="action_filelist">历史</string>
-    <string name="action_baidu">登陆</string>
     <string name="send_to">Share</string>
 
     <string-array name="type_format">

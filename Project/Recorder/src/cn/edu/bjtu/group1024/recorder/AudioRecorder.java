@@ -204,7 +204,6 @@ public class AudioRecorder extends Service {
 			mRecord.prepare();
 
 		} catch (IOException e) {
-			int a = 0;
 		}
 		mRecord.start();
 		onStartRecord();
