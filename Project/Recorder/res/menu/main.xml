@@ -3,12 +3,17 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="@string/action_settings"/>
     <item
         android:id="@+id/action_filelist"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="@string/action_filelist"/>
+    <item 
+        android:id="@+id/action_baidu"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/action_baidu"/>
 
 </menu>
