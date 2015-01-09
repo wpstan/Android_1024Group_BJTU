@@ -41,6 +41,7 @@ import com.baidu.pcs.BaiduPCSActionInfo.PCSCommonFileInfo;
 import com.baidu.pcs.BaiduPCSActionInfo.PCSFileFromToResponse;
 import com.baidu.pcs.BaiduPCSActionInfo.PCSFileInfoResponse;
 import com.baidu.pcs.BaiduPCSActionInfo.PCSListInfoResponse;
+import com.baidu.pcs.BaiduPCSActionInfo.PCSSimplefiedResponse;
 import com.baidu.pcs.BaiduPCSClient;
 import com.baidu.pcs.BaiduPCSStatusListener;
 
@@ -133,9 +134,10 @@ public class FileListActivity extends ListActivity {
 									renameBaiduDialog(position);
 								} else if (which == 1) {
 									// 删除云端
-									deleteBaiduFile();
+									deleteBaiduFile(position);
 								} else if (which == 2) {
 									// 下载云端数据到本地
+									downloadBaiduFile(position);
 								}
 							}
 						}).show();
@@ -219,8 +221,60 @@ public class FileListActivity extends ListActivity {
 				getResources().getText(R.string.send_to)));
 	}
 
+	// 下载班底云端文件
+	private void downloadBaiduFile(final int cloudFileIndex) {
+		new Thread() {
+			public void run() {
+				final PCSSimplefiedResponse response = mBaiduClient
+						.downloadFile(
+								mBaiduFileList.get(cloudFileIndex).path,
+								rootPath
+										+ mBaiduFileList.get(cloudFileIndex).path
+												.substring(20));
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						String toastMsg;
+						if (response.errorCode == 0) {
+							toastMsg = "下载成功";
+							getCloudFile();// 下载成功刷新listview
+						} else {
+							toastMsg = response.message;
+						}
+						Toast.makeText(FileListActivity.this, toastMsg,
+								Toast.LENGTH_SHORT).show();
+
+					}
+				});
+			};
+		}.start();
+	}
+
 	// 删除百度云端的文件
-	private void deleteBaiduFile() {
+	private void deleteBaiduFile(final int cloudFileIndex) {
+		new Thread() {
+			public void run() {
+				final PCSSimplefiedResponse response = mBaiduClient
+						.deleteFile(mBaiduFileList.get(cloudFileIndex).path);
+				runOnUiThread(new Runnable() {
+
+					@Override
+					public void run() {
+						String toastMsg;
+						if (response.errorCode == 0) {
+							toastMsg = "删除成功";
+							getCloudFile();// 删除成功刷新listview
+						} else {
+							toastMsg = response.message;
+						}
+						Toast.makeText(FileListActivity.this, toastMsg,
+								Toast.LENGTH_SHORT).show();
+
+					}
+				});
+			};
+		}.start();
 
 	}
 
