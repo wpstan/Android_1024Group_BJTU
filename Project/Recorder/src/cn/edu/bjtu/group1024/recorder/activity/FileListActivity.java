@@ -16,6 +16,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -221,7 +222,7 @@ public class FileListActivity extends ListActivity {
 				getResources().getText(R.string.send_to)));
 	}
 
-	// 下载班底云端文件
+	// 下载百度云端文件
 	private void downloadBaiduFile(final int cloudFileIndex) {
 		new Thread() {
 			public void run() {
@@ -333,34 +334,6 @@ public class FileListActivity extends ListActivity {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 			public void onClick(DialogInterface dialog, int which) {
-				// if (mWhichMenuShow == CLOUD_SHOW) {
-				// new Thread() {
-				// @Override
-				// public void run() {
-				// final PCSFileFromToResponse response = mBaiduClient.rename(
-				// mBaiduFileList.get(cloudFileIndex).path
-				// .substring(20), inputServer
-				// .getText().toString());
-				// runOnUiThread(new Runnable() {
-				//
-				// @Override
-				// public void run() {
-				// String toastMsg;
-				// if (response.status.errorCode == 0) {
-				// toastMsg = "重命名成功";
-				// } else {
-				// toastMsg = response.status.message;
-				// // "重命名失败";
-				// }
-				// Toast.makeText(FileListActivity.this,
-				// toastMsg, Toast.LENGTH_SHORT)
-				// .show();
-				// }
-				// });
-				// }
-				// }.start();
-				// return;// 当云端点击重命名
-				// }
 				String inputName = inputServer.getText().toString();
 				inputName = "/sdcard/RecorderGroup1024/" + inputName;
 				File oleFile = new File(pathOld);
@@ -394,7 +367,7 @@ public class FileListActivity extends ListActivity {
 		final File file = new File(path);
 		OnClickListener listener = new DialogInterface.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(DialogInterface d, int which) {
 				if (which == 5) {
 					mBaiduUploadDialog.show();
 					new Thread() {
@@ -450,7 +423,30 @@ public class FileListActivity extends ListActivity {
 				} else if (which == 3) {
 					share(path);
 				} else if (which == 0) {
+					final AlertDialog playDialog = new AlertDialog.Builder(
+							FileListActivity.this)
+							.setTitle("正在播放")
+							.setMessage(file.getName() + " 正在播放...")
+							.setPositiveButton("停止",
+									new DialogInterface.OnClickListener() {
+
+										public void onClick(DialogInterface d,
+												int which) {
+											mediaPlayer.stop();
+											mediaPlayer.release();
+										}
+
+									}).show();
+
 					mediaPlayer = new MediaPlayer();
+					mediaPlayer
+							.setOnCompletionListener(new OnCompletionListener() {
+
+								@Override
+								public void onCompletion(MediaPlayer mp) {
+									playDialog.dismiss();
+								}
+							});
 					try {
 						mediaPlayer.setDataSource(path);
 					} catch (IllegalArgumentException e) {
@@ -468,20 +464,7 @@ public class FileListActivity extends ListActivity {
 						e.printStackTrace();
 					}
 					mediaPlayer.start();
-					new AlertDialog.Builder(FileListActivity.this)
-							.setTitle("正在播放")
-							.setMessage(file.getName() + " 正在播放...")
-							.setPositiveButton("停止",
-									new DialogInterface.OnClickListener() {
 
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											mediaPlayer.stop();
-											mediaPlayer.release();
-										}
-
-									}).show();
 				}
 			}
 		};

@@ -12,5 +12,7 @@
     <cn.edu.bjtu.group1024.recorder.uilib.PullRefreshListView
         android:id="@+id/cloud_listview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
 </LinearLayout>
