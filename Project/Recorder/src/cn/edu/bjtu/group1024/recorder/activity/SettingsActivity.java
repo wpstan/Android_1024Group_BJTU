@@ -1,5 +1,7 @@
-package cn.edu.bjtu.group1024.recorder;
+package cn.edu.bjtu.group1024.recorder.activity;
 
+import cn.edu.bjtu.group1024.recorder.R;
+import cn.edu.bjtu.group1024.recorder.R.xml;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;

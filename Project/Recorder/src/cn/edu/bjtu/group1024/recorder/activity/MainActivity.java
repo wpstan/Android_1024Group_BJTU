@@ -1,16 +1,14 @@
-package cn.edu.bjtu.group1024.recorder;
+package cn.edu.bjtu.group1024.recorder.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,27 +23,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import cn.edu.bjtu.group1024.recorder.AudioRecorder.MessageProto;
+import cn.edu.bjtu.group1024.recorder.R;
+import cn.edu.bjtu.group1024.recorder.baidu.IRecorderConstant;
+import cn.edu.bjtu.group1024.recorder.service.AudioRecorder;
+import cn.edu.bjtu.group1024.recorder.service.AudioRecorder.MessageProto;
+import cn.edu.bjtu.group1024.recorder.utils.PreferenceUtils;
 
 import com.baidu.oauth.BaiduOAuth;
 import com.baidu.oauth.BaiduOAuth.BaiduOAuthResponse;
 import com.baidu.oauth.BaiduOAuth.OAuthListener;
-import com.baidu.pcs.BaiduPCSClient;
 
-public class MainActivity extends Activity {
-	// 百度的api_key和secret_key
-	private final static String API_KEY = "L6g70tBRRIXLsY0Z3HwKqlRE";
-	private final static String SECRET_KEY = "S2eyPbtdvVFkj8wDj6pZeidqzSNNkDuc";
-	private final static String ROOT_PATH = "/apps/pcstest_oauth";
-	private final static String SHARED_PREFF_LOGIN = "islogin";
-	private final static String SHARED_PREFF_NAME = "loginname";
-	BaiduPCSClient mBaiduClient = new BaiduPCSClient();
-	private boolean isLogin = false;
+public class MainActivity extends Activity implements IRecorderConstant {
+
+	private boolean mIsLogin = false;
 	private String mLoginName;
-	private SharedPreferences mSharedPreferences;
 
-	private boolean isRecording = false;
+	private boolean mIsRecording = false;
 	private Button mButton;
+
+	private UpdateDuration mUpd = null;
 	private Messenger msgService = null;
 	private final Messenger mMessenger = new Messenger(new Handler() {
 		@Override
@@ -57,15 +53,15 @@ public class MainActivity extends Activity {
 				break;
 			case AudioRecorder.MSG_STOP_RECORD:
 				updataImageBackground(false);
-				if (upd != null)
-					upd.cancel(true);
+				if (mUpd != null)
+					mUpd.cancel(true);
 				break;
 			case AudioRecorder.MSG_TIME_START:
 				MessageProto val = (MessageProto) msg.obj;
-				if (upd != null)
-					upd.cancel(true);
-				upd = new UpdateDuration();
-				upd.execute(val.value, val.value, val.value);
+				if (mUpd != null)
+					mUpd.cancel(true);
+				mUpd = new UpdateDuration();
+				mUpd.execute(val.value, val.value, val.value);
 				break;
 			default:
 				super.handleMessage(msg);
@@ -73,8 +69,7 @@ public class MainActivity extends Activity {
 		}
 	});
 
-	private UpdateDuration upd = null;
-
+	// 更新主题
 	public void updateTheme() {
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -85,22 +80,14 @@ public class MainActivity extends Activity {
 			setTheme(android.R.style.Theme_Holo_Light);
 	}
 
+	// 录音按钮点击事件
 	public void TouchRecord(View view) {
-		isRecording = !isRecording;
-		if (isRecording) {
+		mIsRecording = !mIsRecording;
+		if (mIsRecording) {
 			TouchStartRecord(view);
 		} else {
 			TouchStopRecord(view);
 		}
-	}
-
-	private void updataImageBackground(boolean isRecording) {
-		if (isRecording) {
-			mButton.setBackgroundResource(R.drawable.pause);
-		} else {
-			mButton.setBackgroundResource(R.drawable.play);
-		}
-		this.isRecording = isRecording;
 	}
 
 	private void TouchStartRecord(View view) {
@@ -111,6 +98,17 @@ public class MainActivity extends Activity {
 		sendMsgServ(AudioRecorder.MSG_STOP_RECORD);
 	}
 
+	// 更新按钮的背景图片
+	private void updataImageBackground(boolean isRecording) {
+		if (isRecording) {
+			mButton.setBackgroundResource(R.drawable.pause);
+		} else {
+			mButton.setBackgroundResource(R.drawable.play);
+		}
+		this.mIsRecording = isRecording;
+	}
+
+	// 更新播放时长TextView显示
 	private void updateDuration(long t) {
 		TextView txt = (TextView) findViewById(R.id.text_duration);
 		long t_now = System.currentTimeMillis();
@@ -163,7 +161,7 @@ public class MainActivity extends Activity {
 
 	// 百度链接登陆
 	private void BaiduLogin(final MenuItem item) {
-		if (isLogin) {
+		if (mIsLogin) {
 			new AlertDialog.Builder(MainActivity.this)
 					.setTitle("退出")
 					.setMessage("确定退出吗？")
@@ -172,9 +170,8 @@ public class MainActivity extends Activity {
 
 								public void onClick(DialogInterface dialog,
 										int which) {
-									setLoginName("");
-									setLoginStatus(false);
-									isLogin = false;
+									PreferenceUtils.clearData();// 退出后，清空本地存储的用户名和token
+									mIsLogin = false;
 									item.setTitle("登陆");
 								}
 
@@ -192,9 +189,11 @@ public class MainActivity extends Activity {
 				@Override
 				public void onComplete(BaiduOAuthResponse response) {
 					item.setTitle(response.getUserName());
-					setLoginName(response.getUserName());
-					setLoginStatus(true);
-					isLogin = true;
+					PreferenceUtils.setLoginName(response.getUserName());
+					PreferenceUtils.setLoginStatus(true);
+					PreferenceUtils.setToken(response.getAccessToken());
+					mIsLogin = true;
+
 				}
 
 				@Override
@@ -206,7 +205,10 @@ public class MainActivity extends Activity {
 	}
 
 	private void OpenFileList() {
-		startActivity(new Intent(MainActivity.this, FileListActivity.class));
+		Intent intent = new Intent(MainActivity.this, FileListActivity.class);
+		intent.putExtra("islogin", mIsLogin);
+		intent.putExtra("username", mLoginName);
+		startActivity(intent);
 	}
 
 	private void OpenSettings() {
@@ -251,38 +253,13 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	// 从本地获取登陆状态
-	private boolean getLoginStatus() {
-		return mSharedPreferences.getBoolean(SHARED_PREFF_LOGIN, false);
-	}
-
-	// 设置本地登陆状态
-	private void setLoginStatus(boolean status) {
-		Editor editor = mSharedPreferences.edit();
-		editor.putBoolean(SHARED_PREFF_LOGIN, status);
-		editor.commit();
-	}
-
-	// 从本地获取登陆用户名
-	private String getLoginName() {
-		return mSharedPreferences.getString(SHARED_PREFF_NAME, "");
-	}
-
-	// 设置本地登陆用户名
-	private void setLoginName(String name) {
-		Editor editor = mSharedPreferences.edit();
-		editor.putString(SHARED_PREFF_NAME, name);
-		editor.commit();
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		mSharedPreferences = getSharedPreferences("group1024", MODE_PRIVATE);
 		updateTheme();
 		setContentView(R.layout.activity_main);
-
+		// 初始化PreferenceUtils
+		PreferenceUtils.init(this);
 		mButton = (Button) findViewById(R.id.button);
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(true);
@@ -292,8 +269,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (upd != null)
-			upd.cancel(true);
+		if (mUpd != null)
+			mUpd.cancel(true);
 	}
 
 	@Override
@@ -311,8 +288,8 @@ public class MainActivity extends Activity {
 		if (sharedPref.getBoolean("stop_record_quit", false))
 			sendMsgServ(AudioRecorder.MSG_STOP_RECORD);
 
-		if (upd != null)
-			upd.cancel(true);
+		if (mUpd != null)
+			mUpd.cancel(true);
 	}
 
 	@Override
@@ -326,68 +303,12 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
-		isLogin = getLoginStatus();
-		if (isLogin) {
-			mLoginName = getLoginName();
+		mIsLogin = PreferenceUtils.getLoginStatus();
+		if (mIsLogin) {
+			mLoginName = PreferenceUtils.getLoginName();
 			menu.getItem(2).setTitle(mLoginName);
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	//
-	// // API Key 7QZKIWYxikvOK4MiLiYMe2cG
-	// // Secret Key S2eyPbtdvVFkj8wDj6pZeidqzSNNkDuc
-	// private final static String API_KEY = "L6g70tBRRIXLsY0Z3HwKqlRE";
-	// private final static String SECRET_KEY =
-	// "S2eyPbtdvVFkj8wDj6pZeidqzSNNkDuc";
-	// private final static String ROOT_PATH = "/apps/pcstest_oauth";
-	// BaiduPCSClient api = new BaiduPCSClient();
-	//
-	// @Override
-	// protected void onCreate(Bundle savedInstanceState) {
-	// super.onCreate(savedInstanceState);
-	// setContentView(R.layout.activity_main);
-	// BaiduOAuth oauth = new BaiduOAuth();
-	// oauth.startOAuth(this, API_KEY, new OAuthListener() {
-	//
-	// @Override
-	// public void onException(String arg0) {
-	//
-	// Toast.makeText(MainActivity.this, "onException: " + arg0,
-	// Toast.LENGTH_SHORT).show();
-	// }
-	//
-	// @Override
-	// public void onComplete(BaiduOAuthResponse arg0) {
-	//
-	// api.setAccessToken(arg0.getAccessToken());
-	// new Thread() {
-	// public void run() {
-	// final BaiduPCSActionInfo.PCSQuotaResponse info = api
-	// .quota();
-	// runOnUiThread(new Runnable() {
-	// public void run() {
-	// Toast.makeText(
-	// MainActivity.this,
-	// "onComplete: " + info.total + " used:"
-	// + info.used, Toast.LENGTH_SHORT)
-	// .show();
-	// Log.d("tanshuai", " total:" + info.total / 1024
-	// / 1024 + "MB" + ", used:" + info.used
-	// / 1024 / 1024 + "MB");
-	// }
-	// });
-	// };
-	// }.start();
-	// }
-	//
-	// @Override
-	// public void onCancel() {
-	//
-	// Toast.makeText(MainActivity.this, "onCancel: ",
-	// Toast.LENGTH_SHORT).show();
-	//
-	// }
-	// });
-	// }
 }

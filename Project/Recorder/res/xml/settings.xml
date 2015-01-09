@@ -38,12 +38,12 @@
             android:summary="当离开应用时停止录音"
             android:title="离开停止录音" />
 
-        <cn.edu.bjtu.group1024.recorder.NumberPickerPreference
+        <cn.edu.bjtu.group1024.recorder.uilib.NumberPickerPreference
             android:defaultValue="0"
             android:key="set_max_time"
             android:summary="最大录音时间（单位 秒） 0 = 无限制"
             android:title="最大录音时间" />
-        <cn.edu.bjtu.group1024.recorder.NumberPickerPreference
+        <cn.edu.bjtu.group1024.recorder.uilib.NumberPickerPreference
             android:defaultValue="0"
             android:key="set_max_size"
             android:summary="最大文件大小（单位 MB） 0 = 无限制"
