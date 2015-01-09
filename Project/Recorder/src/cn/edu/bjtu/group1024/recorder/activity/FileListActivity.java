@@ -120,7 +120,7 @@ public class FileListActivity extends ListActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					final int position, long id) {
-				String[] menu = { "重命名", "删除", "下载到本地" };
+				String[] menu = { "云端重命名", "从云端删除", "下载到本地" };
 
 				new AlertDialog.Builder(FileListActivity.this).setTitle("操作")
 						.setItems(menu, new OnClickListener() {
@@ -239,10 +239,9 @@ public class FileListActivity extends ListActivity {
 				new Thread() {
 					@Override
 					public void run() {
-						final PCSFileFromToResponse response = mBaiduClient
-								.rename(mBaiduFileList.get(cloudFileIndex).path
-										.substring(20), inputServer.getText()
-										.toString());
+						final PCSFileFromToResponse response = mBaiduClient.rename(
+								mBaiduFileList.get(cloudFileIndex).path,
+								inputServer.getText().toString());
 						runOnUiThread(new Runnable() {
 
 							@Override
@@ -250,6 +249,7 @@ public class FileListActivity extends ListActivity {
 								String toastMsg;
 								if (response.status.errorCode == 0) {
 									toastMsg = "重命名成功";
+									getCloudFile();// 重命名成功刷新listview
 								} else {
 									toastMsg = response.status.message;
 									// "重命名失败";
