@@ -28,7 +28,7 @@ BJTU-1024Group
 > 9.we will get a print "Hello World by 1024 Group" <br>
 > 10.done! <br>
 
-#### .AIDService
+#### .AIDLService
 > 1.write a library project "Common" <br>
 > 2.write a "aidl" file, and two parcelable aidl file, which are "Request" and "Response" <br>
 > 3.These two class must implements parcelable interface <br>
