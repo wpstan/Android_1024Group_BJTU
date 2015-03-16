@@ -39,3 +39,10 @@ BJTU-1024Group
 > 8.use the NDK tool to compile them <br>
 > 9.run service, and run client <br>
 > 10.done! <br>
+
+####project
+![](https://github.com/tsplaycool/Android_1024Group_BJTU/raw/master/screenshot/1.jpg)
+![](https://github.com/tsplaycool/Android_1024Group_BJTU/raw/master/screenshot/2.jpg)
+![](https://github.com/tsplaycool/Android_1024Group_BJTU/raw/master/screenshot/3.jpg)
+![](https://github.com/tsplaycool/Android_1024Group_BJTU/raw/master/screenshot/4.jpg)
+![](https://github.com/tsplaycool/Android_1024Group_BJTU/raw/master/screenshot/5.jpg)
